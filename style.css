@@ -1,0 +1,74 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Colour pallet */
+/* Background: #415762 */
+/* Nav: #29363D */
+/* Links: #F49F0A */
+/* Accent: #3CBBB1 */
+
+
+body {
+    display: flex;
+    background-color: #415762;
+}
+
+nav {
+    width: 20vw;
+    height: 100vh;
+    background-color: #29363D;
+    display: flex;
+    flex-direction: column;
+    justify-items: flex-start;
+    align-items: center;
+}
+
+.profilePicture {
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    background-color: red;
+}
+
+.profileName {
+    color: white;
+    margin: 20px;
+}
+
+.pictureHeader {
+    margin-top: 50px;
+}
+
+
+
+header {
+    width: auto;
+    height: 100px;
+    width: 100%;
+    position: relative;
+    font-size: 20pt;
+    padding: 25px;
+    background-color: #3CBBB1;
+    display: flex;
+    justify-content: flex-start;
+    justify-items: center;
+}
+
+aside {
+    width: 100%;
+}
+
+section {
+    padding: 25px;
+}
+
+p {
+    color: aliceblue;
+}
+
+a {
+    color: #F39F0A;
+}
