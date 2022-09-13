@@ -46,5 +46,9 @@ app.get("/about", (request, response) => {
     response.render("about.hbs");
 });
 
+app.get("/projects", (request, response) => {
+    response.render("projects.hbs");
+});
+
 
 app.listen(8080);
