@@ -42,4 +42,9 @@ app.get("/contact", (request, response) => {
     response.render("contact.hbs");
 });
 
+app.get("/about", (request, response) => {
+    response.render("about.hbs");
+});
+
+
 app.listen(8080);
