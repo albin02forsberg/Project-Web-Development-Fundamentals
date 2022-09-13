@@ -38,4 +38,8 @@ app.get("/posts/:id", (request, response) => {
     response.render("post.hbs", model);
 });
 
+app.get("/contact", (request, response) => {
+    response.render("contact.hbs");
+});
+
 app.listen(8080);
