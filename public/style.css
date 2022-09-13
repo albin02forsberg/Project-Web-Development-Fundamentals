@@ -21,7 +21,7 @@
 
 body {
     display: flex;
-    background-color: var(--background-color);
+    background-color: var(--background-color) !important;
     border-radius: 10px;
 }
 
@@ -88,7 +88,8 @@ header {
 
 main {
     width: 100%;
-    border-radius: 1000px;
+    height: auto;
+    overflow-y: scroll;
 }
 
 section {
@@ -103,7 +104,7 @@ p {
 
 a {
     color: var(--link-color);
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 h1 {
@@ -148,17 +149,31 @@ h4 {
 }
 
 .card {
-    width: 100%;
-    height: 50%;
-    background-color: var(--nav-color);
+    background-color: var(--nav-color) !important;
     margin: 20px;
     padding: 20px;
     border-radius: 5px;
     border: 1px solid var(--accent-color);
 }
 
+.card-title {
+    color: var(--accent-color);
+    font-size: 20pt;
+}
+
 .card:hover {
     border: 1px solid var(--link-color);
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination ul,
+li {
+    color: var(--accent-color);
 }
 
 

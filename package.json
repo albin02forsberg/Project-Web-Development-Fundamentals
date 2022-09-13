@@ -19,6 +19,7 @@
     },
     "homepage": "https://github.com/albinforsbergju/Project-Web-Development-Fundamentals#readme",
     "dependencies": {
+        "bootstrap": "^5.2.1",
         "express": "^4.18.1",
         "express-handlebars": "^6.0.6"
     }

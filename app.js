@@ -1,4 +1,3 @@
-const { response } = require("express");
 const express = require("express");
 const expressHandlebars = require("express-handlebars");
 
@@ -14,6 +13,7 @@ app.engine(
 );
 
 app.use(express.static("public"));
+app.use("/css", express.static(__dirname + "/node_modules/bootstrap/dist/css"));
 
 app.get("/", (request, response) => {
     response.render("start.hbs");
@@ -25,6 +25,17 @@ app.get("/posts", (request, response) => {
     };
 
     response.render("posts.hbs", model);
+});
+
+app.get("/posts/:id", (request, response) => {
+    const id = request.params.id;
+    const post = dummyData.posts.find((post) => post.id === parseInt(id));
+
+    const model = {
+        post,
+    };
+
+    response.render("post.hbs", model);
 });
 
 app.listen(8080);

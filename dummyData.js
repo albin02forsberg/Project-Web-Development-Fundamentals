@@ -1,7 +1,7 @@
 exports.posts = [{
         id: 1,
         title: "Post 1",
-        content: "Content 1",
+        content: "lorem ipsum dolor sit amet \n consectetur adipiscing elit \n sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
     },
     {
         id: 2,
