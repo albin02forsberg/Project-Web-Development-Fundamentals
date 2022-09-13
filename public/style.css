@@ -170,9 +170,21 @@ h4 {
     align-items: center;
 }
 
-.pagination ul,
-li {
-    color: var(--accent-color);
+.pagination>li>a {
+    background-color: var(--nav-color);
+    color: var(--link-color);
+    border-color: var(--accent-color);
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.title h2 {
+    font-size: 40pt;
 }
 
 

@@ -43,7 +43,7 @@ app.get("/contact", (request, response) => {
 });
 
 app.get("/about", (request, response) => {
-    response.render("about.hbs");
+    response.render("about.hbs", { title: "About" });
 });
 
 app.get("/projects", (request, response) => {
