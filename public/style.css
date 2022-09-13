@@ -1,0 +1,186 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+/* --background-color: #415762; */
+
+
+/* --accent-color: #3CBBB1; */
+
+:root {
+    --background-color: #2f3e47;
+    --nav-color: #29363D;
+    --accent-color: #3CBBB1;
+    --link-color: #F49F0A;
+    --text-color: #F4F1DE;
+}
+
+body {
+    display: flex;
+    background-color: var(--background-color);
+    border-radius: 10px;
+}
+
+nav {
+    width: 25vw;
+    height: 100vh;
+    background-color: var(--nav-color);
+}
+
+.profilePicture {
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    border: 3px solid var(--accent-color);
+    background-color: red;
+}
+
+.profilePicture img {
+    width: 100%;
+    height: 100%;
+    border-radius: 100px;
+}
+
+.pictureHeader {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.profileName {
+    color: white;
+    margin-top: 20px;
+}
+
+.title h2 {
+    color: white;
+}
+
+section h2 {
+    font-size: 23pt;
+}
+
+.pictureHeader {
+    margin-top: 50px;
+}
+
+header {
+    width: auto;
+    height: 100px;
+    width: 100%;
+    position: relative;
+    font-size: 20pt;
+    padding: 25px;
+    background-color: var(--accent-color);
+    display: flex;
+    justify-content: flex-start;
+    justify-items: center;
+    border-radius: 0 0 10px 0;
+}
+
+.title {
+    color: white;
+}
+
+main {
+    width: 100%;
+    border-radius: 1000px;
+}
+
+section {
+    padding: 25px;
+    padding: 50pt 100pt;
+}
+
+p {
+    color: #eaecf3;
+    font-size: 14pt;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+h1 {
+    font-size: 22pt;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    color: var(--accent-color);
+}
+
+.navList {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+}
+
+.navItem {
+    border-bottom: 1px solid;
+    color: #3CBBB1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 50%;
+    height: 100px;
+    padding: 20px;
+    background-size: 100% 200%;
+    background-image: linear-gradient(to bottom, var(--nav-color) 50%, var(--accent-color) 50%);
+    -webkit-transition: background-position 0.5s, border-radius 0.5s;
+    -moz-transition: background-position 0.5s, border-radius 0.5s;
+    transition: background-position 0.5s, border-radius 0.5s;
+}
+
+.navItem:hover {
+    background-position: 0 100%;
+    border-radius: 5px;
+}
+
+.card {
+    width: 100%;
+    height: 50%;
+    background-color: var(--nav-color);
+    margin: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid var(--accent-color);
+}
+
+.card:hover {
+    border: 1px solid var(--link-color);
+}
+
+
+/* Responsive */
+
+@media screen and (max-width: 1024px) {
+    nav {
+        width: 80%;
+        height: 100vh;
+    }
+    .profilePicture {
+        width: 50px;
+        height: 50px;
+        border-radius: 100px;
+        border: 3px solid var(--accent-color);
+        background-color: red;
+    }
+    .profileName {
+        color: white;
+        margin-top: 20px;
+    }
+    .profileName h1 {
+        font-size: 10pt;
+    }
+}
