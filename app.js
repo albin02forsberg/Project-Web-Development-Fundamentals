@@ -6,7 +6,7 @@ const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("blog.db");
 
 db.run(
-    "CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, content TEXT)"
+    "CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, content TEXT, date DATE)"
 );
 
 db.run(
@@ -48,7 +48,9 @@ app.get("/", (request, response) => {
 });
 
 app.get("/posts", (request, response) => {
-    const query = "SELECT * FROM posts";
+    const query = "SELECT * FROM posts ORDER BY id DESC LIMIT 3";
+
+    console.log(request.query.page);
 
     db.all(query, (error, posts) => {
         if (error) {
@@ -57,6 +59,11 @@ app.get("/posts", (request, response) => {
         } else {
             response.render("posts.hbs", {
                 posts: posts,
+                page: {
+                    next: parseInt(request.query.page) + 1,
+                    previous: parseInt(request.query.page) - 1,
+                    current: parseInt(request.query.page),
+                },
             });
         }
     });
@@ -68,10 +75,15 @@ app.get("/posts/create", (request, response) => {
 
 app.post("/posts/create", (request, response) => {
     const query =
-        "INSERT INTO posts (title, subtitle , content) VALUES (?, ?, ?)";
+        "INSERT INTO posts (title, subtitle , content, date) VALUES (?, ?, ?, ?)";
 
     db.run(
-        query, [request.body.title, request.body.subtitle, request.body.content],
+        query, [
+            request.body.title,
+            request.body.subtitle,
+            request.body.content,
+            new Date(),
+        ],
         (error) => {
             if (error) {
                 console.log(error);

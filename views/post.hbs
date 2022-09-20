@@ -6,19 +6,20 @@
 
 <section>
   <p class="markdown">{{{post.content}}}</p>
-  <hr>
+  <hr />
   <h2>Comment</h2>
 
   <form action="/posts/{{post.id}}/comment" method="POST">
-  <div class="form-group">
-    <input
-      type="text"
-      class="form-control"
-      id="userName"
-      name="userName"
-      placeholder="User name">
-  </div>
-  <br>
+    <div class="form-group">
+      <input
+        type="text"
+        class="form-control"
+        id="userName"
+        name="userName"
+        placeholder="User name"
+      />
+    </div>
+    <br />
     <div class="form-group">
       <textarea
         class="form-control"
@@ -30,17 +31,18 @@
     <hr />
     <button type="submit" class="btn btn-primary">Comment</button>
   </form>
-  <hr>
-  <h2>Comments</h2>
-
-  {{#each comments}}
-    <div class="card">
-      <div class="card-body">
-        <p class="card-text">{{content}}</p>
+  <hr />
+  {{#if comments}}
+    <h2>Comments</h2>
+    {{#each comments}}
+      <div class="card">
+        <div class="card-body">
+          <p class="card-text">{{content}}</p>
+        </div>
+        <h5 class="card-footer">{{userName}}</h5>
       </div>
-      <h5 class="card-footer">{{userName}}</h5>
-    </div>
-  {{/each}}
-
-
+    {{/each}}
+  {{else}}
+    <h2>Be the first one to comment!</h2>
+  {{/if}}
 </section>
