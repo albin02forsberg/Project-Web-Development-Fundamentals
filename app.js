@@ -28,6 +28,8 @@ app.use(express.urlencoded({ extended: false }));
 
 function mdToHtml(md) {
     const html = md
+        .replace(/^##### (.*)/gm, "<h5>$1</h5>")
+        .replace(/^#### (.*)/gm, "<h4>$1</h4>")
         .replace(/^### (.*)$/gm, "<h3>$1</h3>")
         .replace(/^## (.*)$/gm, "<h2>$1</h2>")
         .replace(/^# (.*)$/gm, "<h1>$1</h1>")
@@ -83,19 +85,31 @@ app.post("/posts/create", (request, response) => {
 app.get("/posts/:id", (request, response) => {
     const id = request.params.id;
 
-    const query = "SELECT * FROM posts WHERE id = " + id;
+    const postQuery = "SELECT * FROM posts WHERE id = " + id;
 
-    db.get(query, (error, post) => {
+    db.get(postQuery, (error, post) => {
         if (error) {
             console.log(error);
         } else {
-            response.render("post.hbs", {
-                post: {
-                    id: post.id,
-                    title: post.title,
-                    subtitle: post.subtitle,
-                    content: mdToHtml(post.content),
-                },
+            const commentQuery =
+                "SELECT * FROM postComment WHERE postId = " +
+                id +
+                " ORDER BY date DESC";
+
+            db.all(commentQuery, (error, comments) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    response.render("post.hbs", {
+                        post: {
+                            id: post.id,
+                            title: post.title,
+                            subtitle: post.subtitle,
+                            content: mdToHtml(post.content),
+                        },
+                        comments: comments,
+                    });
+                }
             });
         }
     });

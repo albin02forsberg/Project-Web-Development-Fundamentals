@@ -172,6 +172,11 @@ h5 {
     font-size: 20pt;
 }
 
+h5.card-footer {
+    color: var(--accent-color);
+    font-size: 10pt;
+}
+
 .card:hover {
     border: 1px solid var(--link-color);
 }
