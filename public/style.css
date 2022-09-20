@@ -113,8 +113,13 @@ h1 {
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5 {
     color: var(--accent-color);
+}
+
+h5 {
+    font-size: 10pt;
 }
 
 .navList {
@@ -185,6 +190,22 @@ h4 {
 
 .title h2 {
     font-size: 40pt;
+}
+
+p {
+    font-size: 14pt;
+    white-space: pre-line;
+}
+
+.form-control {
+    background-color: var(--nav-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--accent-color) !important;
+}
+
+textarea {
+    resize: both;
+    height: 500px;
 }
 
 
