@@ -9,6 +9,10 @@ db.run(
     "CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, content TEXT)"
 );
 
+db.run(
+    "CREATE TABLE IF NOT EXISTS postComment (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, userName TEXT, postId INTEGER, date DATE, FOREIGN KEY(postId) REFERENCES posts(id))"
+);
+
 const app = express();
 
 app.engine(
@@ -29,7 +33,9 @@ function mdToHtml(md) {
         .replace(/^# (.*)$/gm, "<h1>$1</h1>")
         .replace(/\*\*(.*)\*\*/gm, "<strong>$1</strong>")
         .replace(/\*(.*)\*/gm, "<em>$1</em>")
+        .replace(/!\[(.*)\]\((.*)\)/gm, "<img src='$2' alt='$1' />")
         .replace(/\[(.*)\]\((.*)\)/gm, "<a href='$2'>$1</a>")
+        .replace(/^- (.*)/gm, "<li>$1</li>")
         .replace(/^(.*)$/gm, "<p>$1</p>");
 
     return html;
@@ -85,12 +91,32 @@ app.get("/posts/:id", (request, response) => {
         } else {
             response.render("post.hbs", {
                 post: {
+                    id: post.id,
                     title: post.title,
+                    subtitle: post.subtitle,
                     content: mdToHtml(post.content),
                 },
             });
         }
     });
+});
+
+app.post("/posts/:id/comment", (request, response) => {
+    const id = request.params.id;
+
+    const query =
+        "INSERT INTO postComment (content, userName, postId, date) VALUES (?, ?, ?, ?)";
+
+    db.run(
+        query, [request.body.content, request.body.userName, id, new Date()],
+        (error) => {
+            if (error) {
+                console.log(error);
+            } else {
+                response.redirect("/posts/" + id);
+            }
+        }
+    );
 });
 
 app.get("/contact", (request, response) => {
@@ -105,4 +131,6 @@ app.get("/projects", (request, response) => {
     response.render("projects.hbs");
 });
 
-app.listen(8081);
+app.listen(3000, () => {
+    console.log("Server started (http://localhost:3000/) !");
+});

@@ -6,4 +6,32 @@
 
 <section>
   <p class="markdown">{{{post.content}}}</p>
+  <hr>
+  <h2>Comment</h2>
+
+  <form action="/posts/{{post.id}}/comment" method="POST">
+  <div class="form-group">
+    <input
+      type="text"
+      class="form-control"
+      id="userName"
+      name="userName"
+      placeholder="User name">
+  </div>
+  <br>
+    <div class="form-group">
+      <textarea
+        class="form-control"
+        id="content"
+        name="content"
+        rows="3"
+      ></textarea>
+    </div>
+    <hr />
+    <button type="submit" class="btn btn-primary">Comment</button>
+  </form>
+  <hr>
+  <h2>Comments</h2>
+
+
 </section>
