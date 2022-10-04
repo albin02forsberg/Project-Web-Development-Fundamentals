@@ -288,6 +288,14 @@ app.get("/projects", (request, response) => {
     response.render("projects.hbs");
 });
 
+app.get("/projects/create", (request, response) => {
+    response.render("createProject.hbs");
+});
+
+app.post("/projects/create", (request, response) => {
+    response.redirect("/projects");
+});
+
 app.listen(3000, () => {
     console.log("Server started (http://localhost:3000/) !");
 });

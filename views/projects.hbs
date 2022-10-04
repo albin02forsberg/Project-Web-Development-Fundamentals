@@ -1,7 +1,10 @@
 <header>
   <div class="title">
-    <h2>Projects</h2>
+    <h1>Projects</h1>
   </div>
+  {{#if session.loggedIn}}
+    <a href="/projects/create" class="btn btn-primary">New Project</a>
+  {{/if}}
 </header>
 
 <section>

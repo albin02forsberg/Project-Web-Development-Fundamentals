@@ -2,12 +2,14 @@
   <div class="title">
     <h2>Posts</h2>
   </div>
-</header>
-
-<section>
+  {{#if session.loggedIn}}
   <a href="posts/create" class="btn btn-primary">
     New post
   </a>
+  {{/if}}
+</header>
+
+<section>
 
   <div class="row gy-2">
     {{#each posts}}
