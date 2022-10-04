@@ -1,0 +1,10 @@
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 100px;
+}
+
+.row {
+    margin-top: 2rem;
+}

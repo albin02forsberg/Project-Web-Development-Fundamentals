@@ -1,0 +1,23 @@
+<h1>Search</h1>
+
+<h2>Posts</h2>
+
+{{#unless posts}}
+  No posts found
+{{/unless}}
+
+<div class="row gy-2">
+  {{#each posts}}
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">{{title}}</h2>
+          <h5 class="card-subtitle">{{subtitle}}</h5>
+          <a href="/posts/{{id}}" class="card-link">Read more</a>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>
+
+<h2>Projects</h2>

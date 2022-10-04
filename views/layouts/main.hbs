@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -12,45 +11,50 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    {{! <link rel="stylesheet" href="/style.css" /> }}
+    <link rel="stylesheet" href="/styleNew.css" />
     <title>Page</title>
   </head>
 
   <body>
-    <nav>
-      <div class="pictureHeader">
-        <div class="profilePicture">
-          {{!-- <img
-            src="https://avatars.githubusercontent.com/u/89587488?v=4"
-            alt="picture"
-          /> --}}
-        </div>
-
-        <div class="profileName">
-          <h2>Namn Namnsson</h2>
-        </div>
-      </div>
-      <div class="navList">
-        <a href="/" class="navItem">
-          Home
-        </a>
-        <a href="/about" class="navItem">
-          About
-        </a>
-        <a href="/posts" class="navItem">
-          Posts
-        </a>
-        <a href="/projects" class="navItem">
-          Projects
-        </a>
-        <a href="/contact" class="navItem">
-          Contact
-        </a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a href="/" class="navbar-brand">Namn Namsson</a>
+        <form class="d-flex" method="GET" action="/search">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            name="search"
+          />
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
       </div>
     </nav>
+    <div class="container">
 
-    <main>
-      {{{body}}}
-    </main>
+      <div class="row align-items-start">
+        <div class="col-sm-3">
+          <ul class="list-group">
+            <a href="/" class="list-group-item">Home</a><a
+              href="/posts"
+              class="list-group-item"
+            >Posts</a><a href="/projects" class="list-group-item">Projects</a><a
+              href="/about"
+              class="list-group-item"
+            >About</a><a href="/contact" class="list-group-item">Contact</a>
+          </ul>
+        </div>
+        <div class="col col-sm-9">
+          <main>
+            <div class="container">
+              {{{body}}}
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
   </body>
 
 </html>

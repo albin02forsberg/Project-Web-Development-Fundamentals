@@ -21,10 +21,10 @@ app.engine(
         defaultLayout: "main.hbs",
     })
 );
-
-app.use(express.static("public"));
-app.use("/css", express.static(__dirname + "/node_modules/bootstrap/dist/css"));
-app.use(express.urlencoded({ extended: false }));
+app
+    .use(express.static("public"))
+    .use("/css", express.static(__dirname + "/node_modules/bootstrap/dist/css"))
+    .use(express.urlencoded({ extended: false }));
 
 function mdToHtml(md) {
     const html = md
@@ -48,22 +48,38 @@ app.get("/", (request, response) => {
 });
 
 app.get("/posts", (request, response) => {
-    const query = "SELECT * FROM posts ORDER BY id DESC LIMIT 3";
+    if (parseInt(request.query.page) < 1) {
+        response.redirect("/posts?page=1");
+    }
 
-    console.log(request.query.page);
+    let page = {
+        previous: -1 + parseInt(request.query.page || 1),
+        current: 0 + parseInt(request.query.page || 1),
+        next: 1 + parseInt(request.query.page || 1),
+        isMorePosts: true,
+        isLessPosts: true,
+    };
+
+    const query =
+        "SELECT * FROM posts ORDER BY id DESC LIMIT " +
+        (page.current - 1) * 4 +
+        ", 4";
 
     db.all(query, (error, posts) => {
         if (error) {
             console.log(error);
             response.status(500).send("Something went wrong");
         } else {
+            if (posts.length < 4) {
+                page.isMorePosts = false;
+            }
+
+            if (page.current == 1) {
+                page.isLessPosts = false;
+            }
             response.render("posts.hbs", {
                 posts: posts,
-                page: {
-                    next: parseInt(request.query.page) + 1,
-                    previous: parseInt(request.query.page) - 1,
-                    current: parseInt(request.query.page),
-                },
+                page: page,
             });
         }
     });
@@ -143,6 +159,17 @@ app.post("/posts/:id/comment", (request, response) => {
             }
         }
     );
+});
+
+app.get("/search", (request, response) => {
+    const query =
+        "SELECT id, content, title, subtitle FROM posts WHERE content LIKE '%' || ? || '%' OR title LIKE '%' || ? || '%'";
+
+    db.all(query, [request.query.search], (error, posts) => {
+        response.render("search.hbs", {
+            posts,
+        });
+    });
 });
 
 app.get("/contact", (request, response) => {
