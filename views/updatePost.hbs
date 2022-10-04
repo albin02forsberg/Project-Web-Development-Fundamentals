@@ -1,0 +1,44 @@
+<header>
+  <div class="title">
+    <h2>Update post</h2>
+  </div>
+</header>
+
+<section>
+  <form action="/posts/{{post.id}}/edit" method="POST">
+    <div class="form-group">
+      <h3>Title</h3>
+      <input
+        type="text"
+        class="form-control"
+        id="title"
+        name="title"
+        placeholder="Title"
+        value="{{post.title}}"
+      />
+    </div>
+    <div class="from-group">
+      <h3>Subtitle</h3>
+      <input
+        type="text"
+        class="form-control"
+        id="subtitle"
+        name="subtitle"
+        placeholder="Subtitle"
+        value="{{post.subtitle}}"
+      />
+    </div>
+    <div class="form-group">
+      <h3>Content</h3>
+      <textarea
+        class="form-control"
+        id="content"
+        name="content"
+        rows="3"
+      >{{post.content}}</textarea>
+    </div>
+    <hr />
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</section>

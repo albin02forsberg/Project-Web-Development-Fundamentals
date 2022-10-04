@@ -1,7 +1,11 @@
 const express = require("express");
 const expressHandlebars = require("express-handlebars");
+const expressSession = require("express-session");
 const dummyData = require("./dummyData");
 const sqlite3 = require("sqlite3").verbose();
+
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "password";
 
 const db = new sqlite3.Database("blog.db");
 
@@ -24,7 +28,18 @@ app.engine(
 app
     .use(express.static("public"))
     .use("/css", express.static(__dirname + "/node_modules/bootstrap/dist/css"))
-    .use(express.urlencoded({ extended: false }));
+    .use(express.urlencoded({ extended: false }))
+    .use(
+        expressSession({
+            secret: "secret",
+            resave: false,
+            saveUninitialized: false,
+        })
+    )
+    .use(function(request, response, next) {
+        response.locals.session = request.session;
+        next();
+    });
 
 function mdToHtml(md) {
     const html = md
@@ -44,7 +59,11 @@ function mdToHtml(md) {
 }
 
 app.get("/", (request, response) => {
-    response.render("start.hbs");
+    const model = {
+        session: request.session,
+    };
+
+    response.render("start.hbs", model);
 });
 
 app.get("/posts", (request, response) => {
@@ -87,6 +106,72 @@ app.get("/posts", (request, response) => {
 
 app.get("/posts/create", (request, response) => {
     response.render("createPost.hbs");
+});
+
+app.get("/posts/:id/edit", (request, response) => {
+    const query = "SELECT * FROM posts WHERE id = ?";
+
+    db.get(query, request.params.id, (error, post) => {
+        if (error) {
+            console.log(error);
+            response.status(500).send("Something went wrong");
+        } else {
+            response.render("updatePost.hbs", {
+                post: post,
+            });
+        }
+    });
+});
+
+app.get("/posts/:id/delete", (request, response) => {
+    const query = "SELECT id FROM posts WHERE id = ?";
+
+    db.get(query, request.params.id, (error, post) => {
+        if (error) {
+            console.log(error);
+            response.status(500).send("Something went wrong");
+        } else {
+            response.render("deletePost.hbs", {
+                post: post,
+            });
+        }
+    });
+});
+
+app.post("/posts/:id/delete", (request, response) => {
+    const query = "DELETE FROM posts WHERE ID = ?";
+
+    db.run(query, request.params.id, (error) => {
+        if (error) {
+            console.log(error);
+            response.status(500).send("Something went wrong");
+        } else {
+            response.redirect("/posts");
+        }
+    });
+});
+
+app.post("/posts/:id/edit", (request, response) => {
+    console.log(request.params);
+    const query =
+        "UPDATE posts SET title = ?, subtitle = ?, content = ? WHERE id = ?";
+
+    db.run(
+        query, [
+            request.body.title,
+            request.body.subtitle,
+            request.body.content,
+            request.params.id,
+        ],
+        (error) => {
+            if (error) {
+                console.log(error);
+                response.status(500).send("Something went wrong");
+            } else {
+                response.redirect("/posts/" + request.params.id);
+            }
+        }
+    );
 });
 
 app.post("/posts/create", (request, response) => {
@@ -170,6 +255,25 @@ app.get("/search", (request, response) => {
             posts,
         });
     });
+});
+
+app.get("/login", (request, response) => {
+    response.render("login.hbs");
+});
+
+app.post("/login", (request, response) => {
+    const userName = request.body.username;
+    const password = request.body.password;
+
+    if (userName == ADMIN_USERNAME && password == ADMIN_PASSWORD) {
+        request.session.loggedIn = true;
+        response.redirect("/");
+    } else {
+        response.render("login.hbs", {
+            isError: true,
+            error: "Wrong username or password",
+        });
+    }
 });
 
 app.get("/contact", (request, response) => {

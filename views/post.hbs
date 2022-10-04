@@ -2,6 +2,11 @@
   <div class="title">
     <h1 class="display-1">{{post.title}}</h1>
     <h2 class="display-4 text-muted">{{post.subtitle}}</h2>
+    {{#if session.loggedIn}}
+      <a href="/posts/{{post.id}}/edit" class="btn btn-primary">Edit</a>
+      <a href="/posts/{{post.id}}/delete" class="btn btn-danger">Delete</a>
+    {{/if}}
+
   </div>
 </header>
 
