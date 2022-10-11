@@ -1,9 +1,15 @@
 const express = require("express");
 const expressHandlebars = require("express-handlebars");
 const expressSession = require("express-session");
+const bodyParser = require("body-parser");
+const upload = require("./upload");
+const path = require("path");
 const dummyData = require("./dummyData");
+const Resize = require("./resize");
 const sqlite3 = require("sqlite3").verbose();
+const postRoutes = require("./routes/posts");
 
+const PORT = 8091;
 const ADMIN_USERNAME = "admin";
 const ADMIN_PASSWORD = "password";
 
@@ -17,6 +23,10 @@ db.run(
     "CREATE TABLE IF NOT EXISTS postComment (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, userName TEXT, postId INTEGER, date DATE, FOREIGN KEY(postId) REFERENCES posts(id))"
 );
 
+db.run(
+    "CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, date DATE, imgSource TEXT)"
+);
+
 const app = express();
 
 app.engine(
@@ -28,7 +38,9 @@ app.engine(
 app
     .use(express.static("public"))
     .use("/css", express.static(__dirname + "/node_modules/bootstrap/dist/css"))
-    .use(express.urlencoded({ extended: false }))
+    .use(bodyParser.json())
+    .use(bodyParser.urlencoded({ extended: true }))
+    // .use(express.urlencoded({ extended: false }))
     .use(
         expressSession({
             secret: "secret",
@@ -58,6 +70,8 @@ function mdToHtml(md) {
     return html;
 }
 
+app.use("/posts", postRoutes);
+
 app.get("/", (request, response) => {
     const model = {
         session: request.session,
@@ -66,189 +80,8 @@ app.get("/", (request, response) => {
     response.render("start.hbs", model);
 });
 
-app.get("/posts", (request, response) => {
-    if (parseInt(request.query.page) < 1) {
-        response.redirect("/posts?page=1");
-    }
-
-    let page = {
-        previous: -1 + parseInt(request.query.page || 1),
-        current: 0 + parseInt(request.query.page || 1),
-        next: 1 + parseInt(request.query.page || 1),
-        isMorePosts: true,
-        isLessPosts: true,
-    };
-
-    const query =
-        "SELECT * FROM posts ORDER BY id DESC LIMIT " +
-        (page.current - 1) * 4 +
-        ", 4";
-
-    db.all(query, (error, posts) => {
-        if (error) {
-            console.log(error);
-            response.status(500).send("Something went wrong");
-        } else {
-            if (posts.length < 4) {
-                page.isMorePosts = false;
-            }
-
-            if (page.current == 1) {
-                page.isLessPosts = false;
-            }
-            response.render("posts.hbs", {
-                posts: posts,
-                page: page,
-            });
-        }
-    });
-});
-
-app.get("/posts/create", (request, response) => {
-    response.render("createPost.hbs");
-});
-
-app.get("/posts/:id/edit", (request, response) => {
-    const query = "SELECT * FROM posts WHERE id = ?";
-
-    db.get(query, request.params.id, (error, post) => {
-        if (error) {
-            console.log(error);
-            response.status(500).send("Something went wrong");
-        } else {
-            response.render("updatePost.hbs", {
-                post: post,
-            });
-        }
-    });
-});
-
-app.get("/posts/:id/delete", (request, response) => {
-    const query = "SELECT id FROM posts WHERE id = ?";
-
-    db.get(query, request.params.id, (error, post) => {
-        if (error) {
-            console.log(error);
-            response.status(500).send("Something went wrong");
-        } else {
-            response.render("deletePost.hbs", {
-                post: post,
-            });
-        }
-    });
-});
-
-app.post("/posts/:id/delete", (request, response) => {
-    const query = "DELETE FROM posts WHERE ID = ?";
-
-    db.run(query, request.params.id, (error) => {
-        if (error) {
-            console.log(error);
-            response.status(500).send("Something went wrong");
-        } else {
-            response.redirect("/posts");
-        }
-    });
-});
-
-app.post("/posts/:id/edit", (request, response) => {
-    console.log(request.params);
-    const query =
-        "UPDATE posts SET title = ?, subtitle = ?, content = ? WHERE id = ?";
-
-    db.run(
-        query, [
-            request.body.title,
-            request.body.subtitle,
-            request.body.content,
-            request.params.id,
-        ],
-        (error) => {
-            if (error) {
-                console.log(error);
-                response.status(500).send("Something went wrong");
-            } else {
-                response.redirect("/posts/" + request.params.id);
-            }
-        }
-    );
-});
-
-app.post("/posts/create", (request, response) => {
-    const query =
-        "INSERT INTO posts (title, subtitle , content, date) VALUES (?, ?, ?, ?)";
-
-    db.run(
-        query, [
-            request.body.title,
-            request.body.subtitle,
-            request.body.content,
-            new Date(),
-        ],
-        (error) => {
-            if (error) {
-                console.log(error);
-            } else {
-                response.redirect("/posts");
-            }
-        }
-    );
-});
-
-app.get("/posts/:id", (request, response) => {
-    const id = request.params.id;
-
-    const postQuery = "SELECT * FROM posts WHERE id = " + id;
-
-    db.get(postQuery, (error, post) => {
-        if (error) {
-            console.log(error);
-        } else {
-            const commentQuery =
-                "SELECT * FROM postComment WHERE postId = " +
-                id +
-                " ORDER BY date DESC";
-
-            db.all(commentQuery, (error, comments) => {
-                if (error) {
-                    console.log(error);
-                } else {
-                    response.render("post.hbs", {
-                        post: {
-                            id: post.id,
-                            title: post.title,
-                            subtitle: post.subtitle,
-                            content: mdToHtml(post.content),
-                        },
-                        comments: comments,
-                    });
-                }
-            });
-        }
-    });
-});
-
-app.post("/posts/:id/comment", (request, response) => {
-    const id = request.params.id;
-
-    const query =
-        "INSERT INTO postComment (content, userName, postId, date) VALUES (?, ?, ?, ?)";
-
-    db.run(
-        query, [request.body.content, request.body.userName, id, new Date()],
-        (error) => {
-            if (error) {
-                console.log(error);
-            } else {
-                response.redirect("/posts/" + id);
-            }
-        }
-    );
-});
-
 app.get("/search", (request, response) => {
-    const query =
-        "SELECT id, content, title, subtitle FROM posts WHERE content LIKE '%' || ? || '%' OR title LIKE '%' || ? || '%'";
+    const query = "SELECT * FROM posts WHERE content LIKE '%' || ? || '%' ";
 
     db.all(query, [request.query.search], (error, posts) => {
         response.render("search.hbs", {
@@ -285,17 +118,60 @@ app.get("/about", (request, response) => {
 });
 
 app.get("/projects", (request, response) => {
-    response.render("projects.hbs");
+    const query = "SELECT * FROM projects";
+
+    db.all(query, (error, projects) => {
+        if (error) {
+            console.log(error);
+        } else {
+            response.render("projects.hbs", {
+                projects: projects,
+            });
+        }
+    });
 });
 
 app.get("/projects/create", (request, response) => {
     response.render("createProject.hbs");
 });
 
-app.post("/projects/create", (request, response) => {
-    response.redirect("/projects");
-});
+app.post(
+    "/projects/create",
+    upload.single("image"),
+    async(request, response) => {
+        const imagePath = path.join(__dirname, "public/images");
+        const uploadImg = new Resize(imagePath);
 
-app.listen(3000, () => {
-    console.log("Server started (http://localhost:3000/) !");
+        console.log(request.file);
+
+        if (!request.file) {
+            response.status(401).json({ error: "Please provide an image" });
+        }
+
+        const filename = await uploadImg.save(request.file.buffer);
+
+        console.log("FILE", filename);
+
+        const query =
+            "INSERT INTO projects (title, description, imgSource, date) VALUES (?, ?, ?, ?)";
+
+        db.run(
+            query, [
+                request.body.title,
+                request.body.description,
+                "images/" + filename,
+                new Date(),
+            ],
+            (error) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    response.redirect("/projects");
+                }
+            }
+        );
+    }
+);
+app.listen(PORT, () => {
+    console.log("Server started (http://localhost:" + PORT + "/");
 });

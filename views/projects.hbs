@@ -9,4 +9,16 @@
 
 <section>
 
+{{#each projects}}
+  <div class="card mb-4">
+    <div class="card-img-top justify-content-center">
+      <img src="{{imgSource}}" alt="{{title}}"  />
+    </div>
+    <div class="card-body">
+      <h2 class="card-title">{{title}}</h2>
+            <a href="/projects/{{id}}" class="card-link">Read more</a>
+    </div>
+  </div>
+{{/each}}
+
 </section>
