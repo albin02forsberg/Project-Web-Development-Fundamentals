@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
+const { convertToHtml } = require("../markdownConvert");
 
 router.get("/", (request, response) => {
     if (parseInt(request.query.page) < 1) {
@@ -30,6 +31,7 @@ router.get("/:id", (request, response) => {
         if (error) {
             console.log(error);
         } else {
+            post.content = convertToHtml(post.content);
             response.render("post.hbs", {
                 post: post,
                 comments: comments,

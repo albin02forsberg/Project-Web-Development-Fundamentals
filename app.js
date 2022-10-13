@@ -9,7 +9,7 @@ const Resize = require("./resize");
 const sqlite3 = require("sqlite3").verbose();
 const postRoutes = require("./routes/posts");
 
-const PORT = 8091;
+const PORT = 8080;
 const ADMIN_USERNAME = "admin";
 const ADMIN_PASSWORD = "password";
 
@@ -53,22 +53,6 @@ app
         next();
     });
 
-function mdToHtml(md) {
-    const html = md
-        .replace(/^##### (.*)/gm, "<h5>$1</h5>")
-        .replace(/^#### (.*)/gm, "<h4>$1</h4>")
-        .replace(/^### (.*)$/gm, "<h3>$1</h3>")
-        .replace(/^## (.*)$/gm, "<h2>$1</h2>")
-        .replace(/^# (.*)$/gm, "<h1>$1</h1>")
-        .replace(/\*\*(.*)\*\*/gm, "<strong>$1</strong>")
-        .replace(/\*(.*)\*/gm, "<em>$1</em>")
-        .replace(/!\[(.*)\]\((.*)\)/gm, "<img src='$2' alt='$1' />")
-        .replace(/\[(.*)\]\((.*)\)/gm, "<a href='$2'>$1</a>")
-        .replace(/^- (.*)/gm, "<li>$1</li>")
-        .replace(/^(.*)$/gm, "<p>$1</p>");
-
-    return html;
-}
 
 app.use("/posts", postRoutes);
 
@@ -173,5 +157,5 @@ app.post(
     }
 );
 app.listen(PORT, () => {
-    console.log("Server started (http://localhost:" + PORT + "/");
+    console.log("Server started (http://localhost:" + PORT + "/)");
 });

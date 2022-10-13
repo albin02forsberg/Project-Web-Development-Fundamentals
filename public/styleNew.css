@@ -8,3 +8,19 @@
 .row {
     margin-top: 2rem;
 }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.243);
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
