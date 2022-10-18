@@ -15,6 +15,7 @@
         id="title"
         name="title"
         placeholder="Title"
+        value="{{title}}"
       />
     </div>
     <div class="from-group">
@@ -25,6 +26,7 @@
         id="subtitle"
         name="subtitle"
         placeholder="Subtitle"
+        value="{{subtitle}}"
       />
     </div>
     <div class="form-group">
@@ -34,14 +36,23 @@
         id="content"
         name="content"
         rows="3"
-      ></textarea>
+      >{{content}}</textarea>
     </div>
     <hr />
+
+    {{#if error}}
+      {{#each errors}}
+        <div class="alert alert-danger" role="alert">
+          {{this}}
+        </div>
+      {{/each}}
+    {{/if}}
 
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </section>
 {{/if}}
+
 
 {{#unless session.loggedIn}}
 <section>

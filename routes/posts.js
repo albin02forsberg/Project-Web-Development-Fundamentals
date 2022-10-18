@@ -3,6 +3,11 @@ const router = express.Router();
 const db = require("../db");
 const { convertToHtml } = require("../markdownConvert");
 
+const POST_TITLE_MAX_LENGHT = 100;
+const POST_SUBTITLE_MAX_LENGHT = 200;
+const POST_CONTENT_MAX_LENGHT = 10000;
+const POST_CONTENT_MIN_LENGHT = 100;
+
 router.get("/", (request, response) => {
     if (parseInt(request.query.page) < 1) {
         response.redirect("/posts?page=1");
@@ -104,19 +109,57 @@ router.post("/:id/edit", (request, response) => {
 });
 
 router.post("/create", (request, response) => {
-    db.createPost(
-        request.body.title,
-        request.body.subtitle,
-        request.body.content,
-        (error) => {
-            if (error) {
-                console.log(error);
-                response.status(500).send("Something went wrong");
-            } else {
-                response.redirect("/posts");
+    let errors = [];
+    if (
+        request.body.title.length < 1 ||
+        request.body.subtitle.length < 1 ||
+        request.body.content.length < 1
+    ) {
+        errors.push("Please fill in all fields");
+    }
+    if (request.body.title.length > POST_TITLE_MAX_LENGHT) {
+        errors.push(
+            "Title must be less than " + POST_TITLE_MAX_LENGHT + " characters"
+        );
+    }
+    if (request.body.subtitle.length > POST_SUBTITLE_MAX_LENGHT) {
+        errors.push(
+            "Subtitle must be less than " + POST_SUBTITLE_MAX_LENGHT + " characters"
+        );
+    }
+    if (request.body.content.length > POST_CONTENT_MAX_LENGHT) {
+        errors.push(
+            "Content must be less than " + POST_CONTENT_MAX_LENGHT + " characters"
+        );
+    }
+    if (request.body.content.length < POST_CONTENT_MIN_LENGHT) {
+        errors.push(
+            "Content must be more than " + POST_CONTENT_MIN_LENGHT + " characters"
+        );
+    }
+
+    if (errors.length <= 0) {
+        db.createPost(
+            request.body.title,
+            request.body.subtitle,
+            request.body.content,
+            (error) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    response.redirect("/posts");
+                }
             }
-        }
-    );
+        );
+    } else {
+        response.render("createPost.hbs", {
+            error: true,
+            errors: errors,
+            title: request.body.title,
+            subtitle: request.body.subtitle,
+            content: request.body.content,
+        });
+    }
 });
 
 router.post("/:id/comment", (request, response) => {
