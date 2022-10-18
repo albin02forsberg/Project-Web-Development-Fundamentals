@@ -4,6 +4,7 @@
   </div>
 </header>
 
+{{#if session.loggedIn}}
 <section>
   <form action="/posts/create" method="POST">
     <div class="form-group">
@@ -40,3 +41,12 @@
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </section>
+{{/if}}
+
+{{#unless session.loggedIn}}
+<section>
+  <h3>You need to be logged in to create a post</h3>
+</section>
+{{/unless}}
+
+

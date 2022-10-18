@@ -3,7 +3,7 @@
     <h1>Create project</h1>
   </div>
 </header>
-
+{{#if session.loggedIn}}
 <section>
   <form action="/projects/create" method="POST" enctype="multipart/form-data">
     <div class="form-group">
@@ -36,3 +36,9 @@
     <button type="submit" class="btn btn-primary">Create</button>
   </form>
 </section>
+{{/if}}
+{{#unless session.loggedIn}}
+<section>
+  <h3>You need to be logged in to create a project</h3>
+</section>
+{{/unless}}
