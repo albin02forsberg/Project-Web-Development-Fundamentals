@@ -2,12 +2,11 @@ const express = require("express");
 const expressHandlebars = require("express-handlebars");
 const expressSession = require("express-session");
 const bodyParser = require("body-parser");
-const upload = require("./upload");
-const path = require("path");
 const dummyData = require("./dummyData");
-const Resize = require("./resize");
 const sqlite3 = require("sqlite3").verbose();
+
 const postRoutes = require("./routes/posts");
+const projectRoutes = require("./routes/projects");
 
 const PORT = 8080;
 const ADMIN_USERNAME = "admin";
@@ -24,7 +23,7 @@ db.run(
 );
 
 db.run(
-    "CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, date DATE, imgSource TEXT)"
+    "CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, link TEXT, date DATE, imgSource TEXT)"
 );
 
 const app = express();
@@ -53,8 +52,8 @@ app
         next();
     });
 
-
 app.use("/posts", postRoutes);
+app.use("/projects", projectRoutes);
 
 app.get("/", (request, response) => {
     const model = {
@@ -101,61 +100,6 @@ app.get("/about", (request, response) => {
     response.render("about.hbs", { title: "About" });
 });
 
-app.get("/projects", (request, response) => {
-    const query = "SELECT * FROM projects";
-
-    db.all(query, (error, projects) => {
-        if (error) {
-            console.log(error);
-        } else {
-            response.render("projects.hbs", {
-                projects: projects,
-            });
-        }
-    });
-});
-
-app.get("/projects/create", (request, response) => {
-    response.render("createProject.hbs");
-});
-
-app.post(
-    "/projects/create",
-    upload.single("image"),
-    async(request, response) => {
-        const imagePath = path.join(__dirname, "public/images");
-        const uploadImg = new Resize(imagePath);
-
-        console.log(request.file);
-
-        if (!request.file) {
-            response.status(401).json({ error: "Please provide an image" });
-        }
-
-        const filename = await uploadImg.save(request.file.buffer);
-
-        console.log("FILE", filename);
-
-        const query =
-            "INSERT INTO projects (title, description, imgSource, date) VALUES (?, ?, ?, ?)";
-
-        db.run(
-            query, [
-                request.body.title,
-                request.body.description,
-                "images/" + filename,
-                new Date(),
-            ],
-            (error) => {
-                if (error) {
-                    console.log(error);
-                } else {
-                    response.redirect("/projects");
-                }
-            }
-        );
-    }
-);
 app.listen(PORT, () => {
     console.log("Server started (http://localhost:" + PORT + "/)");
 });

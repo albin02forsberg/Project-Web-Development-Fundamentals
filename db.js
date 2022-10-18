@@ -1,5 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("blog.db");
+const path = require("path");
+const Resize = require("./resize");
 
 db.run(
     "CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, content TEXT, date DATE)"
@@ -111,6 +113,51 @@ exports.addComment = function(content, userName, postId, callback) {
         "INSERT INTO postComment (content, userName, postId, date) VALUES (?, ?, ?, ?)";
 
     db.run(query, content, userName, postId, new Date(), (error) => {
+        callback(error);
+    });
+};
+
+// Projects
+
+exports.getProjects = function(callback) {
+    const query = "SELECT * FROM projects ORDER BY date DESC";
+
+    db.all(query, (error, projects) => {
+        callback(error, projects);
+    });
+};
+
+exports.getProject = function(id, callback) {
+    const query = "SELECT * FROM projects WHERE id = ?";
+    db.get(query, id, (error, project) => {
+        callback(error, project);
+    });
+};
+
+exports.createProject = async function(
+    title,
+    description,
+    link,
+    file,
+    callback
+) {
+    const imagePath = path.join(__dirname, "./public/images/");
+    const uploadImg = new Resize(imagePath);
+
+    if (!file) {
+        response.status(401).json({ error: "Please provide an image" });
+    }
+
+    console.log(file);
+
+    const filename = await uploadImg.save(file.buffer);
+
+    console.log(filename);
+
+    const query =
+        "INSERT INTO projects (title, description, link, imgSource, date) VALUES (?, ?, ?, ?, ?)";
+
+    db.run(query, title, description, link, filename, new Date(), (error) => {
         callback(error);
     });
 };
