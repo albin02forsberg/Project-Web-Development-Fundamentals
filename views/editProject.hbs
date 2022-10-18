@@ -1,0 +1,35 @@
+
+<header>
+  <div class="title">
+    <h1>Update project</h1>
+  </div>
+</header>
+{{#if session.loggedIn}}
+<section>
+  <form action="/projects/{{project.id}}/edit" method="POST">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" name="title" id="title" class="form-control" value="{{project.title}}"/>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        name="description"
+        id="description"
+        class="form-control"
+      >{{project.description}}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="link">Link to project</label>
+      <input type="text" name="link" id="link" class="form-control" value="{{project.link}}"/>
+    </div>
+    <hr />
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+</section>
+{{/if}}
+{{#unless session.loggedIn}}
+<section>
+  <h3>You need to be logged in to update a project</h3>
+</section>
+{{/unless}}

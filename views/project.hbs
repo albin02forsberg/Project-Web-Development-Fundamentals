@@ -1,6 +1,18 @@
-<h1>{{project.title}}</h1>
-<div class="center">
-  <img src="/images/{{project.imgSource}}" alt="{{project.title}}" />
-</div>
+<header>
+  <div class="title">
+    <h1 class="display-1">{{project.title}}</h1>
+    {{#if session.loggedIn}}
+      <a href="/projects/{{project.id}}/edit" class="btn btn-primary">Edit</a>
+      <a href="/projects/{{project.id}}/delete" class="btn btn-danger">Delete</a>
+    {{/if}}
+
+  </div>
+</header>
+
+<section>
+  <div class="center">
+    <img src="/images/{{project.imgSource}}" alt="{{project.title}}" />
+  </div>
   <p class="card-text">{{project.description}}</p>
   <a href="{{project.link}}" class="card-link">Link to project</a>
+</section>

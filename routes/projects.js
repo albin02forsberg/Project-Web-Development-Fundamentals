@@ -39,4 +39,30 @@ router.get("/:id", (request, response) => {
     });
 });
 
+router.get("/:id/edit", (request, response) => {
+    db.getProject(request.params.id, (error, project) => {
+        if (error) {
+            console.log(error);
+        } else {
+            response.render("editProject.hbs", {
+                project,
+            });
+        }
+    });
+});
+
+router.post("/:id/edit", (request, response) => {
+    db.updateProject(
+        request.params.id,
+        request.body.title,
+        request.body.description,
+        request.body.link,
+        (error) => {
+            response.redirect("/projects");
+        }
+    );
+});
+
+
+
 module.exports = router;

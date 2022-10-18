@@ -156,8 +156,18 @@ exports.createProject = async function(
 
     const query =
         "INSERT INTO projects (title, description, link, imgSource, date) VALUES (?, ?, ?, ?, ?)";
+    console.log(query);
 
     db.run(query, title, description, link, filename, new Date(), (error) => {
+        console.log(error);
+        callback(error);
+    });
+};
+
+exports.updateProject = function(id, title, description, link, callback) {
+    const query =
+        "UPDATE projects SET title = ?, description = ?, link = ? WHERE id = ?";
+    db.run(query, [title, description, link, id], (error) => {
         callback(error);
     });
 };
