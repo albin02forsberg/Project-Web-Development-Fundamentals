@@ -3,6 +3,7 @@ const expressHandlebars = require("express-handlebars");
 const expressSession = require("express-session");
 const bodyParser = require("body-parser");
 const dummyData = require("./dummyData");
+const encrypt = require("./encrypt");
 const sqlite3 = require("sqlite3").verbose();
 
 const postRoutes = require("./routes/posts");
@@ -10,7 +11,9 @@ const projectRoutes = require("./routes/projects");
 
 const PORT = 8080;
 const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "password";
+// const ADMIN_PASSWORD = "password";
+const ADMIN_PASSWORD =
+    "$2b$04$TcGjpTtW4RGOinq.7yL5reDaOzwK47PbV6Z2lHmlLsKWIXeHkFcKK";
 
 const db = new sqlite3.Database("blog.db");
 
@@ -81,15 +84,22 @@ app.post("/login", (request, response) => {
     const userName = request.body.username;
     const password = request.body.password;
 
-    if (userName == ADMIN_USERNAME && password == ADMIN_PASSWORD) {
-        request.session.loggedIn = true;
-        response.redirect("/");
-    } else {
-        response.render("login.hbs", {
-            isError: true,
-            error: "Wrong username or password",
-        });
-    }
+    encrypt.decrypt(password, ADMIN_PASSWORD, (error, decryptedPassword) => {
+        console.log("decryptedPassword", decryptedPassword);
+        if (decryptedPassword && userName === ADMIN_USERNAME) {
+            request.session.loggedIn = true;
+            response.redirect("/");
+        } else {
+            response.render("login.hbs", {
+                error: "Wrong username or password",
+            });
+        }
+    });
+});
+
+app.get("/logout", (request, response) => {
+    request.session.loggedIn = false;
+    response.redirect("/");
 });
 
 app.get("/contact", (request, response) => {
