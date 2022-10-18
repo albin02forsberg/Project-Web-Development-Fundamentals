@@ -63,6 +63,18 @@ router.post("/:id/edit", (request, response) => {
     );
 });
 
+router.get("/:id/delete", (request, response) => {
+    response.render("deleteProject.hbs", { id: request.params.id });
+});
+
+router.post("/:id/delete", (request, response) => {
+    db.deleteProject(request.params.id, (error) => {
+        response.redirect("/projects");
+    });
+});
+
+
+
 
 
 module.exports = router;

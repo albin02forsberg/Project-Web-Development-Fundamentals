@@ -171,3 +171,10 @@ exports.updateProject = function(id, title, description, link, callback) {
         callback(error);
     });
 };
+
+exports.deleteProject = function(id, callback) {
+    const query = "DELETE FROM projects WHERE id = ?";
+    db.run(query, id, (error) => {
+        callback(error);
+    });
+};

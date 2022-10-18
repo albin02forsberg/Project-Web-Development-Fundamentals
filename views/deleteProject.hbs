@@ -3,7 +3,7 @@
 
 {{#if session.loggedIn }}
 <section>
-  <form action="/projects/{{post.id}}/delete" method="POST">
+  <form action="/projects/{{id}}/delete" method="POST">
     <button type="submit" class="btn btn-danger">Delete</button>
   </form>
 
@@ -13,6 +13,6 @@
 
 {{#unless session.loggedIn}}
 <section>
-  <h3>You need to be logged in to delete a post</h3>
+  <h3>You need to be logged in to delete a project</h3>
 </section>
 {{/unless}}
