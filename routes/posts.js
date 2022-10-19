@@ -93,19 +93,54 @@ router.get("/:id/edit", (request, params) => {
 });
 
 router.post("/:id/edit", (request, response) => {
-    db.editPost(
-        request.params.id,
-        request.body.title,
-        request.body.subtitle,
-        request.body.content,
-        (error) => {
-            if (error) {
-                console.log(error);
-            } else {
-                response.redirect(`/posts/${request.params.id}`);
+
+    let errors = [];
+
+    if (request.body.title.length > POST_TITLE_MAX_LENGHT) {
+        errors.push("Title is too long");
+    }
+    if (request.body.subtitle.length > POST_SUBTITLE_MAX_LENGHT) {
+        errors.push("Subtitle is too long");
+    }
+    if (request.body.content.length > POST_CONTENT_MAX_LENGHT) {
+        errors.push("Content is too long");
+    }
+    if (request.body.content.length < POST_CONTENT_MIN_LENGHT) {
+        errors.push("Content is too short");
+    }
+    if (request.body.title.length === 0) {
+        errors.push("Title is required");
+    }
+    if (request.body.subtitle.length === 0) {
+        errors.push("Subtitle is required");
+    }
+
+    if (errors.length <= 0) {
+        db.editPost(
+            request.params.id,
+            request.body.title,
+            request.body.subtitle,
+            request.body.content,
+            (error) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    response.redirect(`/posts/${request.params.id}`);
+                }
             }
-        }
-    );
+        );
+    } else {
+        response.render("editPost.hbs", {
+            error: true,
+            errors: errors,
+            post: {
+                id: request.params.id,
+                title: request.body.title,
+                subtitle: request.body.subtitle,
+                content: request.body.content,
+            },
+        });
+    }
 });
 
 router.post("/create", (request, response) => {

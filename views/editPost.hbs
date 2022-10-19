@@ -40,6 +40,14 @@
     </div>
     <hr />
 
+    {{#if error}}
+      {{#each errors}}
+        <div class="alert alert-danger" role="alert">
+          {{this}}
+        </div>
+      {{/each}}
+    {{/if}}
+
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </section>
