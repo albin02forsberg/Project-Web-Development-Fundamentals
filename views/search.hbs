@@ -1,5 +1,13 @@
 <h1>Search</h1>
 
+{{#if error}}
+  {{#each errors}}
+    <div class="alert alert-danger" role="alert">
+      {{this}}
+    </div>
+  {{/each}}
+{{/if}}
+
 <h2>Posts</h2>
 
 {{#unless posts}}
@@ -21,3 +29,18 @@
 </div>
 
 <h2>Projects</h2>
+
+{{#unless projects}}
+  No projects found
+{{/unless}}
+
+{{#each projects}}
+  <div class="col-6">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">{{title}}</h2>
+        <a href="/projects/{{id}}" class="card-link">Read more</a>
+      </div>
+    </div>
+  </div>
+{{/each}}

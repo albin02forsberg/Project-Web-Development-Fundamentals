@@ -68,12 +68,41 @@ app.get("/", (request, response) => {
 
 app.get("/search", (request, response) => {
     const query = "SELECT * FROM posts WHERE content LIKE '%' || ? || '%' ";
+    const query2 =
+        "SELECT * FROM projects WHERE description LIKE '%' || ? || '%' ";
 
-    db.all(query, [request.query.search], (error, posts) => {
-        response.render("search.hbs", {
-            posts,
+    let errors = [];
+
+    if (!request.query.search) {
+        errors.push("Please enter a search term");
+    }
+
+    if (errors.length <= 0) {
+        db.all(query, [request.query.search], (error, posts) => {
+            if (error) {
+                console.log(error);
+            } else {
+                db.all(query2, [request.query.search], (error, projects) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        const model = {
+                            session: request.session,
+                            posts: posts,
+                            projects: projects,
+                        };
+                        response.render("search.hbs", model);
+                    }
+                });
+            }
         });
-    });
+    } else {
+        const model = {
+            error: true,
+            errors: errors,
+        };
+        response.render("search.hbs", model);
+    }
 });
 
 app.get("/login", (request, response) => {
