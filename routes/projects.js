@@ -32,9 +32,13 @@ router.get("/:id", (request, response) => {
         if (error) {
             console.log(error);
         } else {
-            response.render("project.hbs", {
-                project,
-            });
+            if (!project) {
+                response.redirect("/projects");
+            } else {
+                response.render("project.hbs", {
+                    project,
+                });
+            }
         }
     });
 });

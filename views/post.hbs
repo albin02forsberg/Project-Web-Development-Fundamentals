@@ -10,6 +10,10 @@
   </div>
 </header>
 
+{{#if pageError}}
+error
+{{/if}}
+
 <section>
   <article>
     <p>{{post.content}}</p>
@@ -37,6 +41,11 @@
       ></textarea>
     </div>
     <hr />
+    {{#if error}}
+    <p class="danger">
+      You need to add a comment
+    </p>
+    {{/if}}
     <button type="submit" class="btn btn-primary">Comment</button>
   </form>
   <hr />

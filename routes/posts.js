@@ -6,6 +6,8 @@ const POST_TITLE_MAX_LENGHT = 100;
 const POST_SUBTITLE_MAX_LENGHT = 200;
 const POST_CONTENT_MAX_LENGHT = 10000;
 const POST_CONTENT_MIN_LENGHT = 100;
+const COMMENT_MAX_LENGHT = 1000;
+const COMMENT_MIN_LENGHT = 10;
 
 router.get("/", (request, response) => {
     if (parseInt(request.query.page) < 1) {
@@ -35,10 +37,14 @@ router.get("/:id", (request, response) => {
         if (error) {
             console.log(error);
         } else {
-            response.render("post.hbs", {
-                post: post,
-                comments: comments,
-            });
+            if (!post) {
+                response.redirect("/posts");
+            } else {
+                response.render("post.hbs", {
+                    post: post,
+                    comments: comments,
+                });
+            }
         }
     });
 });
@@ -109,7 +115,6 @@ router.get("/:id/edit", (request, params) => {
 });
 
 router.post("/:id/edit", (request, response) => {
-
     let errors = [];
 
     if (request.body.title.length > POST_TITLE_MAX_LENGHT) {
@@ -214,19 +219,40 @@ router.post("/create", (request, response) => {
 });
 
 router.post("/:id/comment", (request, response) => {
-    db.addComment(
-        request.body.content,
-        request.body.userName,
-        request.params.id,
-        (error) => {
-            if (error) {
-                console.log(error);
-                response.status(500).send("Something went wrong");
-            } else {
-                response.redirect("/posts/" + request.params.id);
+    let errors = [];
+
+    if (request.body.content.length < COMMENT_MIN_LENGHT) {
+        errors.push(
+            "Comment must be more than " + COMMENT_MIN_LENGHT + " characters"
+        );
+    }
+    if (request.body.content.length > COMMENT_MAX_LENGHT) {
+        errors.push(
+            "Comment must be less than " + COMMENT_MAX_LENGHT + " characters"
+        );
+    }
+
+    if (request.body.userName === "") {
+        request.body.userName = "Anonymous";
+    }
+
+    if (errors.length <= 0) {
+        db.addComment(
+            request.body.content,
+            request.body.userName,
+            request.params.id,
+            (error) => {
+                if (error) {
+                    console.log(error);
+                    response.status(500).send("Something went wrong");
+                } else {
+                    response.redirect("/posts/" + request.params.id);
+                }
             }
-        }
-    );
+        );
+    } else {
+        response.redirect("/posts/" + request.params.id + "?error=true");
+    }
 });
 
 module.exports = router;
