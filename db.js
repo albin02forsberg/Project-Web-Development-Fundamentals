@@ -26,20 +26,14 @@ exports.paginatePosts = function(param, callback) {
         isLessPosts: true,
     };
 
-    const query =
-        "SELECT * FROM posts ORDER BY id DESC LIMIT " +
-        (page.current - 1) * 4 +
-        ", 4";
+    const query = "SELECT * FROM posts ORDER BY id DESC LIMIT ? , 4";
 
-    db.all(query, (error, posts) => {
+    db.all(query, [(page.current - 1) * 4], (error, posts) => {
         if (error) {
             callback(error);
         } else {
-            const queryMore =
-                "SELECT * FROM posts ORDER BY id DESC LIMIT " +
-                (page.next - 1) * 4 +
-                ", 4";
-            db.all(queryMore, (error, postsMore) => {
+            const queryMore = "SELECT * FROM posts ORDER BY id DESC LIMIT ? , 4";
+            db.all(queryMore, [(page.next - 1) * 4], (error, postsMore) => {
                 if (error) {
                     callback(error);
                 } else {
@@ -155,7 +149,7 @@ exports.createProject = async function(
     console.log(filename);
 
     const query =
-        "INSERT INTO projects (title, description, link, imgSource, date) VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO projects (title, description, link, date, imgSource) VALUES (?, ?, ?, ?, ?)";
     console.log(query);
 
     db.run(query, title, description, link, filename, new Date(), (error) => {
