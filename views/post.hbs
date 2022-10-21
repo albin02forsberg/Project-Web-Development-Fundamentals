@@ -45,7 +45,12 @@
         <div class="card-body">
           <p class="card-text">{{content}}</p>
         </div>
-        <h5 class="card-footer">{{userName}}</h5>
+        <h5 class="card-footer flex">
+          {{userName}}
+          {{#if ../session.loggedIn}}
+            <a href="/posts/{{../post.id}}/delete-comment/{{id}}" class="btn btn-danger">Delete</a>
+          {{/if}}
+        </h5>
       </div>
     {{/each}}
   {{else}}

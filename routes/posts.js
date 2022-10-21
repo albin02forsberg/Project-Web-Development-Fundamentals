@@ -80,6 +80,24 @@ router.post("/:id/delete", (request, response) => {
     });
 });
 
+router.get("/:id/delete-comment/:commentId/", (request, response) => {
+    console.log(request.params);
+    response.render("deleteComment.hbs", {
+        id: request.params.id,
+        commentId: request.params.commentId,
+    });
+});
+
+router.post("/:id/delete-comment/:commentId/", (request, response) => {
+    db.deleteComment(request.params.commentId, (error) => {
+        if (error) {
+            console.log(error);
+        } else {
+            response.redirect(`/posts/${request.params.id}`);
+        }
+    });
+});
+
 router.get("/:id/edit", (request, params) => {
     db.getPost(request.params.id, (error, post) => {
         if (error) {

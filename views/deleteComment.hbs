@@ -1,0 +1,17 @@
+<h1>Are you sure you want to delete this comment?</h1>
+
+{{#if session.loggedIn }}
+<section>
+  <form action="/posts/{{id}}/delete-comment/{{commentId}}" method="POST">
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+
+  <a href="/posts/{{post.id}}" class="btn btn-primary">Go back</a>
+</section>
+{{/if}}
+
+{{#unless session.loggedIn}}
+<section>
+  <h3>You need to be logged in to delete a comment</h3>
+</section>
+{{/unless}}

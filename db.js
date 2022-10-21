@@ -178,3 +178,10 @@ exports.deleteProject = function(id, callback) {
         callback(error);
     });
 };
+
+exports.deleteComment = function(id, callback) {
+    const query = "DELETE FROM postComment WHERE id = ?";
+    db.run(query, id, (error) => {
+        callback(error);
+    });
+};
