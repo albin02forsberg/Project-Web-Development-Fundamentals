@@ -152,7 +152,7 @@ exports.createProject = async function(
         "INSERT INTO projects (title, description, link, date, imgSource) VALUES (?, ?, ?, ?, ?)";
     console.log(query);
 
-    db.run(query, title, description, link, filename, new Date(), (error) => {
+    db.run(query, title, description, link, new Date(), filename, (error) => {
         console.log(error);
         callback(error);
     });
