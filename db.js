@@ -12,7 +12,7 @@ db.run(
 );
 
 db.run(
-    "CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, date DATE, imgSource TEXT)"
+    "CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, link TEXT, date DATE, imgSource TEXT)"
 );
 
 // Posts

@@ -15,19 +15,6 @@ const ADMIN_USERNAME = "admin";
 const ADMIN_PASSWORD =
     "$2b$04$TcGjpTtW4RGOinq.7yL5reDaOzwK47PbV6Z2lHmlLsKWIXeHkFcKK";
 
-const db = new sqlite3.Database("blog.db");
-
-db.run(
-    "CREATE TABLE IF NOT EXISTS posts (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, content TEXT, date DATE)"
-);
-
-db.run(
-    "CREATE TABLE IF NOT EXISTS postComment (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, userName TEXT, postId INTEGER, date DATE, FOREIGN KEY(postId) REFERENCES posts(id))"
-);
-
-db.run(
-    "CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, link TEXT, date DATE, imgSource TEXT)"
-);
 
 const app = express();
 
