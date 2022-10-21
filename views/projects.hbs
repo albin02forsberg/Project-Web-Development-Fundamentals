@@ -8,6 +8,9 @@
 </header>
 
 <section>
+  {{#unless projects}}
+    <h2>There are no projects yet</h2>
+  {{/unless}}
 
   {{#each projects}}
     <div class="card mb-4 mt-4">

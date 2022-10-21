@@ -11,6 +11,10 @@
 
 <section>
 
+  {{#unless posts}}
+  <h2>There are no posts yet</h2>
+  {{/unless}}
+
   <div class="row gy-2">
     {{#each posts}}
       <div class="col-6">
