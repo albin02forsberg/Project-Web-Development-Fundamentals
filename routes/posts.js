@@ -7,7 +7,7 @@ const POST_SUBTITLE_MAX_LENGHT = 200;
 const POST_CONTENT_MAX_LENGHT = 10000;
 const POST_CONTENT_MIN_LENGHT = 100;
 const COMMENT_MAX_LENGHT = 1000;
-const COMMENT_MIN_LENGHT = 10;
+const COMMENT_MIN_LENGHT = 3;
 
 router.get("/", (request, response) => {
     if (parseInt(request.query.page) < 1) {
@@ -32,6 +32,11 @@ router.get("/create", (request, response) => {
 
 router.get("/:id", (request, response) => {
     const id = request.params.id;
+    let commentError = false;
+
+    if (request.query.error) {
+        commentError = true;
+    }
 
     db.getPost(id, (error, post, comments) => {
         if (error) {
@@ -43,6 +48,7 @@ router.get("/:id", (request, response) => {
                 response.render("post.hbs", {
                     post: post,
                     comments: comments,
+                    error: commentError,
                 });
             }
         }
