@@ -179,3 +179,23 @@ exports.deleteComment = function(id, callback) {
         callback(error);
     });
 };
+
+exports.search = function(search, callback) {
+    const query = "SELECT * FROM posts WHERE content LIKE '%' || ? || '%' ";
+    const query2 =
+        "SELECT * FROM projects WHERE description LIKE '%' || ? || '%' ";
+
+    db.all(query, search, (error, posts) => {
+        if (error) {
+            callback(error);
+        } else {
+            db.all(query2, search, (error, projects) => {
+                if (error) {
+                    callback(error);
+                } else {
+                    callback(error, posts, projects);
+                }
+            });
+        }
+    });
+};

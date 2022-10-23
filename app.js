@@ -2,9 +2,8 @@ const express = require("express");
 const expressHandlebars = require("express-handlebars");
 const expressSession = require("express-session");
 const bodyParser = require("body-parser");
-const dummyData = require("./dummyData");
 const encrypt = require("./encrypt");
-const sqlite3 = require("sqlite3").verbose();
+const db = require("./db");
 
 const postRoutes = require("./routes/posts");
 const projectRoutes = require("./routes/projects");
@@ -14,7 +13,6 @@ const ADMIN_USERNAME = "admin";
 // const ADMIN_PASSWORD = "password";
 const ADMIN_PASSWORD =
     "$2b$04$TcGjpTtW4RGOinq.7yL5reDaOzwK47PbV6Z2lHmlLsKWIXeHkFcKK";
-
 
 const app = express();
 
@@ -54,42 +52,25 @@ app.get("/", (request, response) => {
 });
 
 app.get("/search", (request, response) => {
-    const query = "SELECT * FROM posts WHERE content LIKE '%' || ? || '%' ";
-    const query2 =
-        "SELECT * FROM projects WHERE description LIKE '%' || ? || '%' ";
-
     let errors = [];
 
     if (!request.query.search) {
         errors.push("Please enter a search term");
     }
 
-    if (errors.length <= 0) {
-        db.all(query, [request.query.search], (error, posts) => {
-            if (error) {
-                console.log(error);
-            } else {
-                db.all(query2, [request.query.search], (error, projects) => {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        const model = {
-                            session: request.session,
-                            posts: posts,
-                            projects: projects,
-                        };
-                        response.render("search.hbs", model);
-                    }
-                });
-            }
-        });
-    } else {
-        const model = {
-            error: true,
-            errors: errors,
-        };
-        response.render("search.hbs", model);
-    }
+    db.search(request.query.search, (error, posts, projects) => {
+        if (error) {
+            console.log(error);
+        } else {
+            const model = {
+                session: request.session,
+                posts: posts,
+                projects: projects,
+            };
+
+            response.render("search.hbs", model);
+        }
+    });
 });
 
 app.get("/login", (request, response) => {
